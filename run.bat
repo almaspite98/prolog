@@ -1,0 +1,1 @@
+echo main(). | cekla main.cpp

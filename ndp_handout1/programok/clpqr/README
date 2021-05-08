@@ -1,0 +1,3 @@
+clpq.pl	        CLP(Q) példák, beleértve a téglalap-kitöltõ program eredeti változatát
+mortgage.pl     A hiteltörlesztés-számító CLP(R) program
+fill.pl		A téglalap-kitöltõ program eredeti és módosított változatai

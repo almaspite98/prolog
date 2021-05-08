@@ -1,0 +1,96 @@
+$ sicstus -l minib-4.2.0
+% loading /home/szeredi/minib.po...
+% module minib imported into user
+% loaded /home/szeredi/minib.po in module minib, 0 msec 10632 bytes
+SICStus 4.2.0 (x86-linux-glibc2.7): Mon Mar  7 20:03:49 CET 2011
+Licensed to BUTE DP Course
+| ?- sat(A*B =:= (~A)+B), labeling([A,B]).
+A = 1,
+B = 0 ? ;
+A = 1,
+B = 1 ? ;
+no
+| ?- sat((A+B)*C=\=A*C+B), sat(A*B).
+A = 1,
+B = 1,
+C = 0 ? ;
+no
+| ?- count([A,A,B], 2), labeling([A]).
+A = 1,
+B = 0 ? ;
+no
+| ?- count([A,A,B,B], 3), labeling([A,B]).
+no
+| ?- sat(~A =:= A).
+no
+| ?- sat(A =:= A).
+true ? ;
+no
+| ?- sat(A*A=:=B).
+B = A ? ;
+no
+| ?- sat(A#A=:=B).
+B = 0 ? ;
+no
+| ?- sat(A+B=:=C), A=B.
+B = A,
+C = A ? ;
+no
+| ?- [user].
+% compiling user...
+| fault([F1,F2,F3,F4,F5/*,U1,U2,U3*/], [X,Y,Cin], [Sum,Cout]) :-
+	count([F1,F2,F3,F4,F5], 1),
+	sat(
+           (F1 + (U1 =:= X * Cin)) *
+           (F2 + (U2 =:= Y * U3)) *
+           (F3 + (Cout =:= U1 + U2)) *
+           (F4 + (U3 =:= X # Cin)) *
+           (F5 + (Sum =:= Y # U3))
+	   ).
+| end_of_file.
+% compiled user in module user, 0 msec 872 bytes
+yes
+| ?- fault(L, [1,1,0], [1,0]), labeling(L).
+L = [0,0,0,1,0] ? ;
+no
+| ?- fault(L, [1,0,1], [0,0]), labeling(L).
+L = [0,0,1,0,0] ? ;
+L = [1,0,0,0,0] ? ;
+no
+| ?- compile(mine_minib).
+% compiling /home/szeredi/mine_minib.pl...
+%  loading /home/szeredi/minib.po...
+%  loaded /home/szeredi/minib.po in module minib, 0 msec 64 bytes
+%  loading /opt/sicstus4.2.0/bin/sp-4.2.0/sicstus-4.2.0/library/lists.po...
+%  module lists imported into user
+%   loading /opt/sicstus4.2.0/bin/sp-4.2.0/sicstus-4.2.0/library/types.po...
+%   module types imported into lists
+%   loaded /opt/sicstus4.2.0/bin/sp-4.2.0/sicstus-4.2.0/library/types.po in module types, 0 msec 672 bytes
+%  loaded /opt/sicstus4.2.0/bin/sp-4.2.0/sicstus-4.2.0/library/lists.po in module lists, 0 msec 62232 bytes
+% compiled /home/szeredi/mine_minib.pl in module user, 10 msec 71296 bytes
+yes
+| ?- mine(m0, B).
+B = 
+[1,0,0,1]
+[0,0,1,1] ? ;
+no
+| ?- mine(m1, B).
+B = 
+[1,0,1,0]
+[1,0,0,0]
+[0,0,0,0]
+[0,1,0,1] ? ;
+no
+| ?- mine(m9, B).
+B = 
+[0,0,0,1,0,1,0,0]
+[0,0,0,0,0,0,0,0]
+[0,0,0,0,0,0,0,0]
+[0,0,1,1,1,0,0,0]
+[0,0,1,0,1,0,1,1]
+[0,0,1,0,0,0,1,0]
+[0,1,0,0,0,0,0,1]
+[0,0,0,0,0,0,0,0] ? ;
+no
+| ?- halt.
+$

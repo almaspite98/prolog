@@ -1,0 +1,6 @@
+clpb.pl		CLP(B) példák, beleértve az aknakeresõ interaktív változatát
+mine.pl		Az aknakeresõ feladvány megoldása (interaktív és
+		nem-interaktív)
+mine_fd.pl	Az aknakeresõ feladvány megoldása nem-interaktív
+		megoldása CLPFD.ben
+

@@ -1,0 +1,5 @@
+mine_minib.pl		minib megoldó az aknakeresõ feladványra
+minib.script		Példák a minib64.po futására
+minib64.po		Az 1. kis házi feladat egy megoldása
+			Prolog object (.po) formátumban, 4.3.5 verziójú
+			64 bites SICStus Prologhoz

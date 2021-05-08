@@ -1,0 +1,10 @@
+2
+ -  s  s  s  -  -  w  -  -
+ -  -  s  w  -  -  -  -  -
+ -  -  w  -  s sw  -  -  -
+ -  9  w  s  -  w  -  -  s
+ -  w  w  -  w  w  -  -  w
+ s sw  -  s  w  w  s sw  -
+ - sw  -  w  -  w  s  w  w
+ -  w  s sw  -  - sw  -  w
+ -  -  -  w  -  w  -  -  w
