@@ -66,7 +66,7 @@ apply_dist(M,N,D,I,0,C):-
     nth0_mtx(D,I,0,D1),
     print(D1),nl,
 
-    dist(D1,E1,0,0,N),
+    dist(D1,E1,E1,E1,N),
 
     length(M, K),
     C1 is C + 1,
@@ -90,7 +90,7 @@ apply_dist(M,N,D,I,J,C):-
     nth0_mtx(D,I,J,D1),
     print(D1),nl,
 
-    dist(D1,E1,0,E3,N),
+    dist(D1,E1,E1,E3,N),
 %    print('E1: '),print(E1),nl,
 %    print('E2: '),print(E2),nl,
 %    print('E3: '),print(E3),nl,
@@ -112,7 +112,7 @@ apply_dist(M,N,D,I,0,C):-
     nth0_mtx(D,I,0,D1),
     print(D1),nl,
     print('p1:'),nl,
-    dist(D1,E1,E2,_,N),
+    dist(D1,E1,E2,E1,N),
     print('p2:'),nl,
 
 %    print('E1: '),print(E1),nl,
@@ -161,33 +161,40 @@ nth0_mtx(M,I,J,E):-
 %dist_contr(E1,E2,N):-
 %    abs(E1-E2) #= N.
 %
-dist([],_,_,_,_):-
-    print('A').
-dist([A],A,_,_,_):-
-    print('B').
-dist([A,s],A,E2,_,N):-
-    print('C'),
-    abs(A-E2) #= N.
-dist([A,w],A,_,E3,N):-
-    print('D'),
-    abs(A-E3) #= N.
-dist([A,s,w],A,E2,E3,N):-
-    print('E'),
-    abs(A-E2) #= N,
-    abs(A-E3) #= N.
-dist([s],E1,E2,_,N):-
-%    domain([E1,E2], 1, 4),
-    print('E1: '), print(E1),nl,
-    print('E2: '), print(E2),nl,
-    print('N: '), print(N),nl,
-    abs(E1-E2) #= N.
+
+dist([],E1,E2,E3,N):-
+    print('A'),nl,
+    abs(E1-E2) #\= N,
+    abs(E1-E3) #\= N.
+dist([s],E1,E2,E3,N):-
+    print('S'),nl,
+    abs(E1-E2) #= N,
+    abs(E1-E3) #\= N.
 dist([s,w],E1,E2,E3,N):-
-    print('F'),
+    print('F'),nl,
     abs(E1-E2) #= N,
     abs(E1-E3) #= N.
-dist([w],E1,_,E3,N):-
-    print('G'),
-    abs(E1-E3) #= N.
+dist([w],E1,E2,E3,N):-
+    print('G'),nl,
+    abs(E1-E3) #= N,
+    abs(E1-E2) #\= N.
+dist([A],A,E2,E3,N):-
+    print('B'),nl,
+    abs(A-E2) #\= N,
+    abs(A-E3) #\= N.
+dist([A,s],A,E2,E3,N):-
+    print('C'),nl,
+    abs(A-E2) #= N,
+    abs(A-E3) #= N.
+dist([A,w],A,E2,E3,N):-
+    print('D'),nl,
+    abs(A-E3) #= N,
+    abs(A-E2) #\= N.
+dist([A,s,w],A,E2,E3,N):-
+    print('E'),nl,
+    abs(A-E2) #= N,
+    abs(A-E3) #= N.
+
 
 sudoku(s(N,T), Rows) :-
 
@@ -216,7 +223,7 @@ sudoku(s(N,T), Rows) :-
 problem(1, [[ _, _, _, _],
             [ _, _, _, _],
             [ _, _, _, _],
-            [ 4, _, _, _]]).
+            [ _, _, _, _]]).
 
 blocks([], []).
 blocks([N1,N2|Ns1], [N3,N4|Ns2]) :-
@@ -237,24 +244,31 @@ main :-
 %    maplist(portray_clause, Rows),nl,
 %   apply_dist(M,N,D,I,J,C):-
 
-    apply_dist([[ 2, 4, 1, 3],
-                [ 3, 1, 4, 2],
-                [ 1, 3, 2, 4],
-                [ 4, 2, 3, 1]],1,                            [[  [s],    [],     [],    [s]],
-                                                              [   [],    [],     [],     []],
-                                                              [   [],   [s],  [s,w],     []],
-                                                              [   [4],    [],    [w],     []]],0,0,0),
+%    apply_dist([[ 2, 4, 1, 3],
+%                [ 3, 1, 4, 2],
+%                [ 1, 3, 2, 4],
+%                [ 4, 2, 3, 1]],1,                            [[  [s],    [],     [],    [s]],
+%                                                              [   [],    [],     [],     []],
+%                                                              [   [],   [s],  [s,w],     []],
+%                                                              [   [4],    [],    [w],     []]],0,0,0),
 
-%   problem(1, Table),
-%    sudoku(s(1, [[[s], [],    [],[s]],
-%                         [ [], [],    [], []],
-%
-%                         [ [],[s], [s,w], []],
-%                         [ [4], [],   [w], []]
-%                        ]
+   problem(1, Table),
+%    sudoku(s(1,  [[[s] ,[s], [s,w],  [s]],
+%                 [_ , _,[s,w],  _],
+%                 [ [s] , [s], [s,w], [s,w]],
+%                 [_ ,[3,w],  [w],  _]]
 %                        ), Table),
-%    maplist(labeling([ff]), Table),
-%    maplist(portray_clause, Table),nl,
+sudoku(s(1, [[[s], [],    [],[s]],
+                         [ [], [],    [], []],
+
+                         [ [],[s], [s,w], []],
+                         [ [4], [],   [w], []]
+                        ]
+                        ), Table),
+    maplist(labeling([ff]), Table),
+    maplist(portray_clause, Table),nl,
+
+
 
 %    domain([X,Y], 0, 10), dist([s],X,Y,_,2),
 %    Y is 5,
@@ -264,9 +278,9 @@ main :-
     %%    E2 #= 1.
     %    dist([2,s,w],E1, E2, E3, 1).
 %    domain([E2, E1], 1, 4),
-%    print('E2: '), print(E2),nl,
-%    dist([],E1, E2, 0, 2),
-%    E1 #= 2,
+%%    print('E2: '), print(E2),nl,
+%    dist([s],E1, E2, 3, 1),
+%%    E1 #= ,
 %    print('E2: '), print(E2),nl,
 %    X is 2,
 %    print(X),nl,
