@@ -55,7 +55,6 @@ apply_dist(M,_,_,_,_,C):-
     C is K*K,
     print('DONE'),nl.
 apply_dist(M,N,D,I,0,C):-
-
     length(M,L),
     L0 is L - 1,
     I == L0,
@@ -68,11 +67,6 @@ apply_dist(M,N,D,I,0,C):-
     print(D1),nl,
 
     dist(D1,E1,0,0,N),
-%    print('E1: '),print(E1),nl,
-%    print('E2: '),print(E2),nl,
-%    print('E3: '),print(E3),nl,  print('E1: '),print(E1),nl,
-%    print('E2: '),print(E2),nl,
-%    print('E3: '),print(E3),nl,
 
     length(M, K),
     C1 is C + 1,
@@ -92,11 +86,11 @@ apply_dist(M,N,D,I,J,C):-
     nth0_mtx(M,I,J,E1),
 %    E3 is E1 + N,
     J0 is J-1,
-    nth0_mtx(M,I,J0,E2),
+    nth0_mtx(M,I,J0,E3),
     nth0_mtx(D,I,J,D1),
     print(D1),nl,
 
-    dist(D1,E1,E2,0,N),
+    dist(D1,E1,0,E3,N),
 %    print('E1: '),print(E1),nl,
 %    print('E2: '),print(E2),nl,
 %    print('E3: '),print(E3),nl,
@@ -219,8 +213,8 @@ sudoku(s(N,T), Rows) :-
 %%    dist([s],E1, E2, 0, 3).
     apply_dist(Rows,N,T,0,0,0).
 
-problem(1, [[ _, 2, _, _],
-            [ _, _, _, 1],
+problem(1, [[ _, _, _, _],
+            [ _, _, _, _],
             [ _, _, _, _],
             [ 4, _, _, _]]).
 
@@ -243,24 +237,24 @@ main :-
 %    maplist(portray_clause, Rows),nl,
 %   apply_dist(M,N,D,I,J,C):-
 
-%    apply_dist([[ 2, 4, 1, 3],
-%                [ 3, 1, 4, 2],
-%                [ 1, 3, 2, 4],
-%                [ 4, 2, 3, 1]],1,                            [[  [s],    [],     [],    [s]],
-%                                                              [   [],    [],     [],     []],
-%                                                              [   [],   [s],  [s,w],     []],
-%                                                              [   [4],    [],    [w],     []]],0,0,0),
+    apply_dist([[ 2, 4, 1, 3],
+                [ 3, 1, 4, 2],
+                [ 1, 3, 2, 4],
+                [ 4, 2, 3, 1]],1,                            [[  [s],    [],     [],    [s]],
+                                                              [   [],    [],     [],     []],
+                                                              [   [],   [s],  [s,w],     []],
+                                                              [   [4],    [],    [w],     []]],0,0,0),
 
-   problem(1, Table),
-    sudoku(s(1, [[[s], [],    [],[s]],
-                         [ [], [],    [], []],
-
-                         [ [],[s], [s,w], []],
-                         [ [4], [],   [w], []]
-                        ]
-                        ), Table),
-    maplist(labeling([ff]), Table),
-    maplist(portray_clause, Table),nl,
+%   problem(1, Table),
+%    sudoku(s(1, [[[s], [],    [],[s]],
+%                         [ [], [],    [], []],
+%
+%                         [ [],[s], [s,w], []],
+%                         [ [4], [],   [w], []]
+%                        ]
+%                        ), Table),
+%    maplist(labeling([ff]), Table),
+%    maplist(portray_clause, Table),nl,
 
 %    domain([X,Y], 0, 10), dist([s],X,Y,_,2),
 %    Y is 5,
@@ -269,11 +263,10 @@ main :-
 
     %%    E2 #= 1.
     %    dist([2,s,w],E1, E2, E3, 1).
-%    domain([E2], -4, 4),
+%    domain([E2, E1], 1, 4),
 %    print('E2: '), print(E2),nl,
-%    dist([s],2, E2, 0, 2),
-%    maplist(labeling([ff]), E2),
-
+%    dist([],E1, E2, 0, 2),
+%    E1 #= 2,
 %    print('E2: '), print(E2),nl,
 %    X is 2,
 %    print(X),nl,
