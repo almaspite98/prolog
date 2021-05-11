@@ -91,9 +91,6 @@ apply_dist(M,N,D,I,J,C):-
     print(D1),nl,
 
     dist(D1,E1,E1,E3,N),
-%    print('E1: '),print(E1),nl,
-%    print('E2: '),print(E2),nl,
-%    print('E3: '),print(E3),nl,
 
     length(M, K),
     C1 is C + 1,
@@ -115,9 +112,6 @@ apply_dist(M,N,D,I,0,C):-
     dist(D1,E1,E2,E1,N),
     print('p2:'),nl,
 
-%    print('E1: '),print(E1),nl,
-%    print('E2: '),print(E2),nl,
-%    print('E3: '),print(E3),nl,
 
     length(M, K),
     C1 is C + 1,
@@ -139,10 +133,6 @@ apply_dist(M,N,D,I,J,C):-
     J0 is J - 1,
     nth0_mtx(M,I,J0,E3),
     nth0_mtx(D,I,J,D1),
-    print(D1),nl,
-        print('E1: '),print(E1),nl,
-        print('E2: '),print(E2),nl,
-        print('E3: '),print(E3),nl,
     dist(D1,E1,E2,E3,N),
 
 %
@@ -197,18 +187,18 @@ dist([A,s,w],A,E2,E3,N):-
 
 
 sudoku(s(N,T), Rows) :-
-
-    length(Rows, 4), maplist(same_length(Rows), Rows),
+    length(T, L),
+    length(Rows, L), maplist(same_length(Rows), Rows),
     append(Rows, Vs),
-    domain(Vs, 1, 4),
+    domain(Vs, 1, L),
 %        Vs in 1..9,
     maplist(all_distinct, Rows),
     transpose(Rows, Columns),
     maplist(all_distinct, Columns),
-
-    Rows = [As,Bs,Cs,Ds],
-    blocks(As, Bs),
-    blocks(Cs, Ds),
+    cella(Rows, 1),
+%    Rows = [As,Bs,Cs,Ds],
+%    blocks(As, Bs),
+%    blocks(Cs, Ds),
 %    nth0_mtx(Rows, 0,1,E1),
 %    nth0_mtx(Rows, 1,1,E2),
 %    nth0_mtx(Rows, 0,0,E3),
@@ -220,22 +210,79 @@ sudoku(s(N,T), Rows) :-
 %%    dist([s],E1, E2, 0, 3).
     apply_dist(Rows,N,T,0,0,0).
 
-problem(1, [[ _, _, _, _],
-            [ _, _, _, _],
-            [ _, _, _, _],
-            [ _, _, _, _]]).
+%problem(M,L):-
+%    length(M,L),
 
 blocks([], []).
 blocks([N1,N2|Ns1], [N3,N4|Ns2]) :-
         all_distinct([N1,N2,N3,N4]),
         blocks(Ns1, Ns2).
 
+
+
 goal(X,Z,Y):-
       Y #= X+Z.
 %      Y is X + 2.
 %    abs(X-Y) #= 3.
 
+
+get_element([H|_],0, H).
+get_element([H|_],0, _) :-
+	L1 is H,
+	get_element([H|_],0, L1).
+get_element([_|T], I, L) :-
+	I1 is I-1,
+	get_element(T, I1, L).
+
+get_result_list(M,I,J,K,L,IC,JC,L):-
+	IC is K*K.
+get_result_list(M,I,J,K,L,IC,JC,LR):-
+	I1 is I + IC mod K,
+	get_element(M,I1,L1),
+	get_element(L1,JC,E1),
+	append(L,[E1],L2),
+
+	IC1 is IC + 1,
+	JC1 is J + truncate(IC1/K),
+	get_result_list(M,I,J,K,L2,IC1,JC1,LR).
+
+
+	%% ( condition -> then_clause ; else_clause )
+iterate(IC,JC,K):-
+	IC is K*K-1.
+iterate(IC, JC, K):-
+		IC1 is IC + 1,
+		JC1 is 0 + truncate(IC1/K),
+		iterate(IC1,JC1,K).
+
+cella(S,I):-
+    length(S, L),
+    I > L.
+cella(S,I):-
+	length(S,K),
+	K1 is truncate(sqrt(K)),
+	X is truncate((I-1)/K1)*K1,
+	Y is ((I-1-(truncate((I-1)/K1))*K1)*K1),
+	get_result_list(S,X,Y,K1,[],0,Y, C),
+	print(C),nl,
+	all_distinct(C),
+	I1 is I + 1,
+	cella(S, I1).
+
+
 main :-
+%	print('cella([[1,2,3,4],[5,6,7,8],[9,10,11,12],[13,14,15,16]], 1, C2): '),nl,
+%	cella([[2,5,4,6,1,7,3,8,9],
+%	       [3,9,6,5,4,8,7,1,2],
+%	       [7,1,8,2,3,9,4,5,6],
+%	       [5,8,7,1,2,4,9,6,3],
+%	       [1,6,2,7,9,3,8,4,5],
+%	       [4,3,9,8,6,5,1,2,7],
+%	       [9,4,1,3,5,2,6,7,8],
+%	       [8,2,3,4,7,6,5,9,1],
+%	       [6,7,5,9,8,1,2,3,4]]
+%, 1),nl,
+
 %    maplist(goal,[1,2,4],[2,0,1],Ys),
 %    print(Ys),nl,
 %    problem(1, Rows),
@@ -252,18 +299,28 @@ main :-
 %                                                              [   [],   [s],  [s,w],     []],
 %                                                              [   [4],    [],    [w],     []]],0,0,0),
 
-   problem(1, Table),
+%   problem(Table),
 %    sudoku(s(1,  [[[s] ,[s], [s,w],  [s]],
 %                 [_ , _,[s,w],  _],
 %                 [ [s] , [s], [s,w], [s,w]],
 %                 [_ ,[3,w],  [w],  _]]
 %                        ), Table),
-sudoku(s(1, [[[s], [],    [],[s]],
-                         [ [], [],    [], []],
-
-                         [ [],[s], [s,w], []],
-                         [ [4], [],   [w], []]
-                        ]
+%sudoku(s(1, [[[s], [],    [],[s]],
+%                         [ [], [],    [], []],
+%
+%                         [ [],[s], [s,w], []],
+%                         [ [4], [],   [w], []]
+%                        ]
+%                        ), Table),
+sudoku(s(1, [[[s],[],[w],[s],[],[w],[],[7],[]],
+            [[],[],[s],[2,w],[w],[],[],[w],[]],
+            [[s],[s,w],[s],[],[],[w],[],[w],[s]],
+            [[],[w],[],[s],[],[s],[],[s],[]],
+            [[s],[],[],[w],[w],[],[w],[],[]],
+            [[s],[],[w],[],[],[w],[9],[w],[w]],
+            [[s],[s],[s],[],[],[],[],[s],[s]],
+            [[],[3],[s],[s],[],[],[s],[],[]],
+            [[],[],[w],[],[],[w],[],[w],[w]]]
                         ), Table),
     maplist(labeling([ff]), Table),
     maplist(portray_clause, Table),nl,
