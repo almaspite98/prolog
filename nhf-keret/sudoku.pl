@@ -134,23 +134,36 @@ sudoku(s(N,T), Rows) :-
 %    print(T),nl,
     length(T, L),
     length(Rows, L),
+
     maplist(same_length(Rows), Rows),
     append(Rows, Vs),
     domain(Vs, 1, L),
 
+%    statistics(walltime, [TimeSinceStart2 | [TimeSinceLastCall2]]),
     maplist(all_distinct, Rows),
+%    statistics(walltime, [NewTimeSinceStart2 | [ExecutionTime2]]),
+%    write('Execution took '), write(ExecutionTime2), write(' ms.'), nl,
 
+%    statistics(walltime, [TimeSinceStart3 | [TimeSinceLastCall3]]),
     transpose(Rows, Columns),
     maplist(all_distinct, Columns),
+%    statistics(walltime, [NewTimeSinceStart3 | [ExecutionTime3]]),
+%    write('Execution took '), write(ExecutionTime3), write(' ms.'), nl,
 
+
+%    statistics(walltime, [TimeSinceStart | [TimeSinceLastCall]]),
     cella(Rows, 1),
+%    statistics(walltime, [NewTimeSinceStart | [ExecutionTime]]),
+%    write('Execution took '), write(ExecutionTime), write(' ms.'), nl,
 
+%    statistics(walltime, [TimeSinceStart4 | [TimeSinceLastCall4]]),
     apply_dist(Rows,N,T,0,0,0),
+%    statistics(walltime, [NewTimeSinceStart4 | [ExecutionTime4]]),
+%    write('Execution took '), write(ExecutionTime4), write(' ms.'), nl,
 
 %    fd_statistics(constraints, Result),
 %    print('Result: '),print(Result),nl,
-    append(Rows, FlatList),
-    labeling([ff], FlatList).
+    labeling([ff], Vs).
 %    maplist(portray_clause, FlatList),nl.
 
 
