@@ -113,7 +113,7 @@ dist([A,s],E1,E2,E3,N):-
     integer(A),
     E1 is A,
     abs(A-E2) #= N,
-    abs(A-E3) #= N.
+    abs(A-E3) #\= N.
 dist([A,w],E1,E2,E3,N):-
     integer(A),
     E1 is A,

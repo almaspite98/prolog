@@ -115,8 +115,8 @@ dist([s,w],E1,E2,E3,N):-
     abs(E1-E2) #= N,
     abs(E1-E3) #= N.
 dist([w],E1,E2,E3,N):-
-    abs(E1-E3) #= N,
-    abs(E1-E2) #\= N.
+    abs(E1-E2) #\= N,
+    abs(E1-E3) #= N.
 dist([A],E1,E2,E3,N):-
     integer(A),
     E1 is A,
@@ -126,12 +126,12 @@ dist([A,s],E1,E2,E3,N):-
     integer(A),
     E1 is A,
     abs(A-E2) #= N,
-    abs(A-E3) #= N.
+    abs(A-E3) #\= N.
 dist([A,w],E1,E2,E3,N):-
     integer(A),
     E1 is A,
-    abs(A-E3) #= N,
-    abs(A-E2) #\= N.
+    abs(A-E2) #\= N,
+    abs(A-E3) #= N.
 dist([A,s,w],E1,E2,E3,N):-
     integer(A),
     E1 is A,
@@ -248,7 +248,7 @@ main :-
 %                 [ [s] , [s], [s,w], [s,w]],
 %                 [_ ,[3,w],  [w],  _]]
 %                        ), Table),
-sudoku(s(1, [[[4,s],[2],[],[s]],[[1],[],[2],[]],[[3],[4,s],[s,w],[]],[[],[],[w],[]]]
+sudoku(s(3, [[[4,s],[2],[],[s]],[[1],[],[2],[]],[[3],[4,s],[s,w],[]],[[],[],[w],[]]]
                         ), Table1),
 sudoku(s(1, [[[],[w],[],[]],[[s],[],[s],[s,w]],[[],[1,w],[],[w]],[[],[w],[],[w]]]
                         ), Table2),
