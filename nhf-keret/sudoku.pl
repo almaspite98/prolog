@@ -82,43 +82,30 @@ dist([s,w],E1,E2,E3,N):-
 dist([w],E1,E2,E3,N):-
     abs(E1-E3) #= N,
     abs(E1-E2) #\= N.
-dist([A],E1,E2,E3,N):-
+dist([A|Tail],E1,E2,E3,N):-
     integer(A),
     E1 is A,
-    abs(A-E2) #\= N,
-    abs(A-E3) #\= N.
-dist([A,s],E1,E2,E3,N):-
-    integer(A),
-    E1 is A,
-    abs(A-E2) #= N,
-    abs(A-E3) #\= N.
-dist([A,w],E1,E2,E3,N):-
-    integer(A),
-    E1 is A,
-    abs(A-E3) #= N,
-    abs(A-E2) #\= N.
-dist([A,s,w],E1,E2,E3,N):-
-    integer(A),
-    E1 is A,
-    abs(A-E2) #= N,
-    abs(A-E3) #= N.
-
+    dist(Tail, E1, E2, E3, N).
 
 sudoku(s(N,T), Rows) :-
-    print(T),
+%    print(T),nl,
     length(T, L),
     length(Rows, L),
     apply_dist(Rows,N,T,0,0,0),
+
     maplist(same_length(Rows), Rows),
     append(Rows, Vs),
     domain(Vs, 1, L),
     maplist(all_distinct, Rows),
+
     transpose(Rows, Columns),
     maplist(all_distinct, Columns),
-%    apply_dist(Rows,N,T,0,0,0),
+
     cella(Rows, 1),
-    maplist(labeling([ff]), Rows),
-    maplist(portray_clause, Rows),nl.
+
+    append(Rows, FlatList),
+    labeling([ff], FlatList).
+%    maplist(portray_clause, Rows),nl.
 
 
 get_element([H|_],0, H).
