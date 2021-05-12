@@ -105,23 +105,20 @@ dist([A,s,w],E1,E2,E3,N):-
 
 
 sudoku(s(N,T), Rows) :-
+    print(T),
     length(T, L),
-    length(Rows, L), maplist(same_length(Rows), Rows),
+    length(Rows, L),
+    apply_dist(Rows,N,T,0,0,0),
+    maplist(same_length(Rows), Rows),
     append(Rows, Vs),
     domain(Vs, 1, L),
     maplist(all_distinct, Rows),
     transpose(Rows, Columns),
     maplist(all_distinct, Columns),
+%    apply_dist(Rows,N,T,0,0,0),
     cella(Rows, 1),
-    apply_dist(Rows,N,T,0,0,0),
-    maplist(labeling([ff]), Rows).
-
-
-
-blocks([], []).
-blocks([N1,N2|Ns1], [N3,N4|Ns2]) :-
-        all_distinct([N1,N2,N3,N4]),
-        blocks(Ns1, Ns2).
+    maplist(labeling([ff]), Rows),
+    maplist(portray_clause, Rows),nl.
 
 
 get_element([H|_],0, H).
