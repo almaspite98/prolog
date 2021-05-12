@@ -2,7 +2,53 @@
 -export([ sudoku/2]).
 :- use_module(library(clpfd)), use_module(library(lists)).
 
+%:-asserta(clpfd:full_answer).  % only necessary for SICStus
 
+%apply_dist(M,_,_,_,_,C):-
+%    length(M, K),
+%    C is K*K,
+%    print('DONE'),nl.
+%apply_dist(M,N,D,I,J,C):-
+%    length(M,L),
+%    L0 is L - 1,
+%    nth0_mtx(M,I,J,E1),
+%    I0 is I + 1,
+%    nth0_mtx(M,I0,J,E2),
+%    J0 is J - 1,
+%    nth0_mtx(M,I,J0,E3),
+%    nth0_mtx(D,I,J,D1),
+%    (
+%        J>0 ->
+%        (
+%            I < L0 ->
+%            print('00: '),nl,
+%            print(I),print(' '),print(J),print(' '),print(C),nl,
+%            dist(D1,E1,E2,E3,N)
+%        ;
+%%            I == L0,
+%            print('10: '),nl,
+%            print(I),print(' '),print(J),print(' '),print(C),nl,
+%            dist(D1,E1,E1,E3,N)
+%        )
+%    ;
+%%        J==0,
+%        (
+%            I < L0 ->
+%            print('01: '),nl,
+%            print(I),print(' '),print(0),print(' '),print(C),nl,
+%            dist(D1,E1,E2,E1,N)
+%        ;
+%%            I == L0,
+%            print('11: '),nl,
+%            print(I),print(' '),print(0),print(' '),print(C),nl,
+%            dist(D1,E1,E1,E1,N)
+%        )
+%    ),
+%    length(M, K),
+%    C1 is C + 1,
+%    I1 is truncate(C1/K),
+%    J1 is C1 mod K,
+%    apply_dist(M,N,D,I1,J1,C1).
 
 apply_dist(M,_,_,_,_,C):-
     length(M, K),
@@ -63,12 +109,9 @@ nth0_mtx(M,I,J,E1),
     J1 is C1 mod K,
     apply_dist(M,N,D,I1,J1,C1).
 
-
-
 nth0_mtx(M,I,J,E):-
     nth0(I,M,L),
     nth0(J,L,E).
-
 
 dist([],E1,E2,E3,N):-
     abs(E1-E2) #\= N,
@@ -84,18 +127,17 @@ dist([w],E1,E2,E3,N):-
     abs(E1-E2) #\= N.
 dist([A|Tail],E1,E2,E3,N):-
     integer(A),
-    E1 is A,
+    E1 #= A,
     dist(Tail, E1, E2, E3, N).
 
 sudoku(s(N,T), Rows) :-
 %    print(T),nl,
     length(T, L),
     length(Rows, L),
-    apply_dist(Rows,N,T,0,0,0),
-
     maplist(same_length(Rows), Rows),
     append(Rows, Vs),
     domain(Vs, 1, L),
+
     maplist(all_distinct, Rows),
 
     transpose(Rows, Columns),
@@ -103,9 +145,13 @@ sudoku(s(N,T), Rows) :-
 
     cella(Rows, 1),
 
+    apply_dist(Rows,N,T,0,0,0),
+
+%    fd_statistics(constraints, Result),
+%    print('Result: '),print(Result),nl,
     append(Rows, FlatList),
     labeling([ff], FlatList).
-%    maplist(portray_clause, Rows),nl.
+%    maplist(portray_clause, FlatList),nl.
 
 
 get_element([H|_],0, H).

@@ -130,12 +130,9 @@ dist([A,s,w],E1,E2,E3,N):-
 
 sudoku(s(N,T), Rows) :-
 %    print(T),nl,
-    statistics(walltime, [TimeSinceStart | [TimeSinceLastCall]]),
     length(T, L),
     length(Rows, L),
-    apply_dist(Rows,N,T,0,0,0),
-    statistics(walltime, [NewTimeSinceStart | [ExecutionTime]]),
-    write('Execution took '), write(ExecutionTime), write(' ms.'), nl,
+
     statistics(walltime, [TimeSinceStart2 | [TimeSinceLastCall2]]),
     maplist(same_length(Rows), Rows),
     append(Rows, Vs),
@@ -147,14 +144,20 @@ sudoku(s(N,T), Rows) :-
     write('Execution took '), write(ExecutionTime2), write(' ms.'), nl,
     statistics(walltime, [TimeSinceStart3 | [TimeSinceLastCall3]]),
 %    apply_dist(Rows,N,T,0,0,0),
-    cella(Rows, 1),
+     cella(Rows, 1),
 %    K is truncate(sqrt(L)),
 %    chunks(K, Rows, RowChunks),
 %    maplist(blocks((K, K)), RowChunks),
     statistics(walltime, [NewTimeSinceStart3 | [ExecutionTime3]]),
     write('Execution took '), write(ExecutionTime3), write(' ms.'), nl,
 
-    maplist(labeling([ff]), Rows),
+    statistics(walltime, [TimeSinceStart | [TimeSinceLastCall]]),
+    apply_dist(Rows,N,T,0,0,0),
+    statistics(walltime, [NewTimeSinceStart | [ExecutionTime]]),
+    write('Execution took '), write(ExecutionTime), write(' ms.'), nl,
+
+    append(Rows, FlatList),
+    labeling([ff], FlatList),
     maplist(portray_clause, Rows),nl.
 
 %problem(M,L):-
@@ -297,13 +300,7 @@ main :-
 %%    maplist(labeling([ff]), M),
 %    statistics(walltime, [NewTimeSinceStart | [ExecutionTime]]),
 %    write('Execution took '), write(ExecutionTime), write(' ms.'), nl,
-    sudoku(s(1, [[[],[],[],[],[],[],[],[],[]],
-    [[],[],[],[],[],[],[],[],[]],
-    [[],[],[],[],[],[8],[],[],[]],
-    [[],[],[],[],[9],[],[],[],[6]],
-    [[],[],[],[],[],[],[],[],[]],
-    [[],[],[],[],[],[],[5],[],[]],
-    [[],[9],[],[],[],[],[],[],[]],[[],[],[],[],[],[],[],[],[]],[[],[3],[],[],[5],[],[4],[],[]]]
+    sudoku(s(1, [[[],[],[s],[w],[s],[s],[],[],[],[],[],[],[],[],[w],[]],[[],[],[],[],[11,s],[],[],[],[3],[],[],[w],[s],[],[],[s,w]],[[],[],[6],[8],[],[],[w],[],[],[],[],[w],[],[],[],[15]],[[],[w],[s],[],[],[w],[],[],[8],[w],[4,s],[],[],[w],[6],[]],[[11],[],[],[],[],[],[],[w],[],[],[s],[],[s,w],[],[s],[w]],[[],[],[],[12,s],[],[10],[w],[],[],[s],[],[],[],[],[s],[]],[[],[],[],[],[],[],[],[s],[],[],[],[2],[10],[],[],[]],[[],[],[s],[],[],[],[],[],[w],[],[s],[11],[],[6],[],[]],[[s],[],[w],[],[],[w],[],[w],[s],[],[],[],[],[],[1,s],[]],[[],[],[],[],[s],[],[s],[],[6],[],[],[],[15],[],[],[10]],[[],[],[],[],[s],[],[],[],[],[w],[s],[],[],[4,w],[],[]],[[],[w],[s,w],[10],[],[],[],[],[],[8],[],[],[],[s],[w],[]],[[s],[6],[1],[],[s,w],[],[w],[w],[],[5,s],[s],[14],[4],[s],[],[]],[[],[],[w],[s],[],[],[s,w],[],[9],[],[],[],[],[s],[s],[]],[[],[s,w],[],[w],[w],[s],[s],[],[s],[s],[],[],[8],[],[w],[]],[[16],[],[],[],[w],[],[],[],[],[],[],[w],[],[],[],[]]]
                             ), Table),
 
 
