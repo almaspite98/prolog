@@ -129,7 +129,7 @@ get_element([_|T], I, L) :-
 	I1 is I-1,
 	get_element(T, I1, L).
 
-get_result_list(M,I,J,K,L,IC,JC,L):-
+get_result_list(_,_,_,K,L,IC,_,L):-
 	IC is K*K.
 get_result_list(M,I,J,K,L,IC,JC,LR):-
 	I1 is I + IC mod K,
