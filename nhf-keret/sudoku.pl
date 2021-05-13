@@ -2,7 +2,6 @@
 -export([ sudoku/2]).
 :- use_module(library(clpfd)), use_module(library(lists)).
 
-
 apply_dist(M,_,_,_,_,C):-
         length(M, K),
         C is K*K.
@@ -32,6 +31,15 @@ apply_dist(M,N,D,I,J,C):-
                 dist(D1,E1,E1,E1,N)
             )
         ),
+%        nth0(0,D1,A),
+%        (
+%            integer(A) ->
+%            nth0(I, M, Sor),
+%            global_cardinality(Sor, [A-0,_-_,])
+%%            nth0(J, M)
+%        ;
+%
+%        )
         length(M, K),
         C1 is C + 1,
         I1 is truncate(C1/K),
@@ -44,14 +52,29 @@ nth0_mtx(M,I,J,E):-
     nth0(J,L,E).
 
 dist_to_be(E1, E, N) +:
-    E1 in ({E + N} \/ {E - N}) ,
-    E in ({E1 + N} \/ {E1 - N}).
-dist_not_be(E1, E, N) +:
-    E1 in \({E + N} \/ {E - N}) ,
-    E in \({E1 + N} \/ {E1 - N}).
+    E1 in (dom(E) + N) \/ (dom(E) - N),
+    E in (dom(E1) + N) \/ (dom(E1) - N).
+%    E1 in ({E + N} \/ {E - N}) ,
+%    E in ({E1 + N} \/ {E1 - N}).
+%dist_not_be(E1, E, N) +:
+%%%    E1 in \({E + N} \/ {E - N}) ,
+%%    abs(E1 - E) #\= N.
+%    E1 in E1 - ((dom(E) + N) \/ (dom(E) - N)) ,
+%    E in E - ((dom(E1) + N) \/ (dom(E1) - N)).
+%%    E1 in \((dom(E) + N) \/ (dom(E)- N)) ,
+%%    E in \({E1 + N} \/ {E1 - N}).
+%%    E in dom(\(dom(E1) + N) /\ \(dom(E1) - N)).
+%
 
 
+dist_not_be(X, Y, N) :-
+     scalar_product([1,-1],[X,Y],#=,D,[consistency(domain)]),
+%     D in {N, -N}.
+    abs(D) #\= N.
+%     D #= N,
+%     D #= -N.
 dist([],E1,E2,E3,N):-
+
     dist_not_be(E1, E2, N),
     dist_not_be(E1, E3, N).
 dist([s],E1,E2,E3,N):-
@@ -86,8 +109,55 @@ sudoku(s(N,T), Rows) :-
 
     apply_dist(Rows,N,T,0,0,0),
 
-    labeling([ff, enum], Vs).
+    labeling([ff, value(x)], Vs).
 %    maplist(portray_clause, FlatList),nl.
+%labelling([value(x)],list),
+x(X, Rest, BB0, BB):-
+	BB0 = BB,
+%	fd_set(X, X'),
+%	fdset_to_list(X', X'')
+	%fdset_member
+%	[X']
+
+    shave_vars(Rest),
+	shave_var(X),
+	indomain(X).
+%    fd_set(X, Dom),
+%    fdset_to_list(Dom, List),
+%    maplist(filter_var([X],_),List),
+%	filter_var([X], _, H),
+%	labelling([], [X]).
+shave_vars([]).
+shave_vars([H|T]):-
+    shave_var(H),
+    shave_vars(T).
+
+shave_var(V):-
+	fd_set(V, Dom),
+	fdset_member(C, Dom),
+	( \+ V = C -> V #\= C % meghiusul
+	; fail
+	), !.
+shave_var(_).
+
+%shave_var(V):-
+%	fd_set(V, Dom),
+%    fdset_to_list(Dom, List)
+%%	fdset_member(C, Dom),
+%    filter_var(List, _, )
+%shave_var(_).
+
+
+
+%filter_var([], [], _).
+%filter_var([V|Vs], Fs, N) :-
+%    integer(V), !, filter_var(Vs, Fs, N).
+%filter_var([V|Vs], [V|Fs], N) :-
+%    (  \+ (V = N) -> V #\= N
+%    ;
+%    ), filter_var(Vs, Fs, N).
+
+
 
 
 get_element([H|_],0, H).
