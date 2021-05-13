@@ -6,83 +6,58 @@
 
 :- use_module(library(clpfd)), use_module(library(lists)).
 
-apply_dist(M,_,_,_,_,C):-
-    length(M, K),
-    C is K*K,
-    print('DONE'),nl.
-apply_dist(M,N,D,I,0,C):-
-    length(M,L),
-    L1 is L*L,
-    C < L1,
-    L0 is L - 1,
-    I == L0,
-    nth0_mtx(M,I,0,E1),
-    nth0_mtx(D,I,0,D1),
+    apply_dist(M,_,_,_,_,C):-
+        length(M, K),
+        C is K*K.
+    apply_dist(M,N,D,I,J,C):-
+        length(M,L),
 
-    dist(D1,E1,E1,E1,N),
+        nth0_mtx(M,I,J,E1),
+        L0 is L - 1,
+        I0 is I + 1,
+%        I0 is I + 1,
+%        nth0_mtx(M,I0,J,E2),
+%        J0 is J - 1,
+%        nth0_mtx(M,I,J0,E3),
 
-    length(M, K),
-    C1 is C + 1,
-    I1 is truncate(C1/K),
-    J1 is C1 mod K,
-    apply_dist(M,N,D,I1,J1,C1).
-apply_dist(M,N,D,I,J,C):-
-    length(M,L),
-    L1 is L*L,
-    C < L1,
-    L0 is L - 1,
-    I == L0,
-    nth0_mtx(M,I,J,E1),
-%    E3 is E1 + N,
-    J0 is J-1,
-    nth0_mtx(M,I,J0,E3),
-    nth0_mtx(D,I,J,D1),
-
-    dist(D1,E1,E1,E3,N),
-
-    length(M, K),
-    C1 is C + 1,
-    I1 is truncate(C1/K),
-    J1 is C1 mod K,
-    apply_dist(M,N,D,I1,J1,C1).
-apply_dist(M,N,D,I,0,C):-
-    length(M,L),
-    L1 is L*L,
-    C < L1,
-    nth0_mtx(M,I,0,E1),
-%    E3 is E1 + N,
-    I0 is I + 1,
-    nth0_mtx(M,I0,0,E2),
-    nth0_mtx(D,I,0,D1),
-    dist(D1,E1,E2,E1,N),
-
-
-    length(M, K),
-    C1 is C + 1,
-    I1 is truncate(C1/K),
-    J1 is C1 mod K,
-    apply_dist(M,N,D,I1,J1,C1).
-apply_dist(M,N,D,I,J,C):-
-    J > 0,
-    length(M,L),
-    L1 is L*L,
-    C < L1,
-    L0 is L - 1,
-    I < L0,
-    nth0_mtx(M,I,J,E1),
-    I0 is I + 1,
-    nth0_mtx(M,I0,J,E2),
-    J0 is J - 1,
-    nth0_mtx(M,I,J0,E3),
-    nth0_mtx(D,I,J,D1),
-    dist(D1,E1,E2,E3,N),
-
-%
-    length(M, K),
-    C1 is C + 1,
-    I1 is truncate(C1/K),
-    J1 is C1 mod K,
-    apply_dist(M,N,D,I1,J1,C1).
+        nth0_mtx(D,I,J,D1),
+        (
+            J > 0 ->
+            print('J>0'),nl,
+            J0 is J - 1,
+            nth0_mtx(M,I,J0,E3),
+            (
+                I < L0 ->
+                print('00: '),nl,
+                nth0_mtx(M,I0,J,E2),
+                print(I),print(' '),print(J),print(' '),print(C),nl,
+                dist(D1,E1,E2,E3,N)
+            ;
+    %            I == L0,
+                print('10: '),nl,
+                print(I),print(' '),print(J),print(' '),print(C),nl,
+                dist(D1,E1,E1,E3,N)
+            )
+        ;
+        print('J==0'),nl,
+            (
+                I < L0 ->
+                print('01: '),nl,
+                nth0_mtx(M,I0,J,E2),
+                print(I),print(' '),print(0),print(' '),print(C),nl,
+                dist(D1,E1,E2,E1,N)
+            ;
+    %            I == L0,
+                print('11: '),nl,
+                print(I),print(' '),print(0),print(' '),print(C),nl,
+                dist(D1,E1,E1,E1,N)
+            )
+        ),
+        length(M, K),
+        C1 is C + 1,
+        I1 is truncate(C1/K),
+        J1 is C1 mod K,
+        apply_dist(M,N,D,I1,J1,C1).
 
 
 
@@ -242,8 +217,8 @@ main :-
 %                        ), Table),
 %sudoku(s(3, [[[4,s],[2],[],[s]],[[1],[],[2],[]],[[3],[4,s],[s,w],[]],[[],[],[w],[]]]
 %                        ), Table1),
-%sudoku(s(1, [[[],[w],[],[]],[[s],[],[s],[s,w]],[[],[1,w],[],[w]],[[],[w],[],[w]]]
-%                        ), Table2),
+sudoku(s(1, [[[],[w],[],[]],[[s],[],[s],[s,w]],[[],[1,w],[],[w]],[[],[w],[],[w]]]
+                        ), Table2),
 %sudoku(s(1, [[[s],[],[w],[s],[],[w],[],[7],[]],
 %            [[],[],[s],[2,w],[w],[],[],[w],[]],
 %            [[s],[s,w],[s],[],[],[w],[],[w],[s]],
