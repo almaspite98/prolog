@@ -43,22 +43,41 @@ nth0_mtx(M,I,J,E):-
     nth0(I,M,L),
     nth0(J,L,E).
 
+dist_to_be(E1, E, N) +:
+    E1 in ({E + N} \/ {E - N}),
+    E in ({E1 + N} \/ {E1 - N}).
+dist_not_be(E1, E, N) +:
+    E1 in \({E + N} \/ {E - N}),
+    E in \({E1 + N} \/ {E1 - N}).
+
+%dist_equals(E1, A)+:
+%    E1 in {A}.
+
 dist([],E1,E2,E3,N):-
-    abs(E1-E2) #\= N,
-    abs(E1-E3) #\= N.
+    dist_not_be(E1, E2, N),
+    dist_not_be(E2, E1, N),
+    dist_not_be(E1, E3, N),
+    dist_not_be(E3, E1, N).
 dist([s],E1,E2,E3,N):-
-    abs(E1-E2) #= N,
-    abs(E1-E3) #\= N.
+    dist_to_be(E1, E2, N),
+    dist_to_be(E2, E1, N),
+    dist_not_be(E1, E3, N),
+    dist_not_be(E3, E1, N).
 dist([s,w],E1,E2,E3,N):-
-    abs(E1-E2) #= N,
-    abs(E1-E3) #= N.
+    dist_to_be(E1, E2, N),
+    dist_to_be(E2, E1, N),
+    dist_to_be(E1, E3, N),
+    dist_to_be(E3, E1, N).
 dist([w],E1,E2,E3,N):-
-    abs(E1-E3) #= N,
-    abs(E1-E2) #\= N.
+    dist_not_be(E1, E2, N),
+    dist_not_be(E2, E1, N),
+    dist_to_be(E1, E3, N),
+    dist_to_be(E3, E1, N).
 dist([A|Tail],E1,E2,E3,N):-
     integer(A),
     E1 #= A,
     dist(Tail, E1, E2, E3, N).
+
 
 sudoku(s(N,T), Rows) :-
 %    print(T),nl,
@@ -77,7 +96,7 @@ sudoku(s(N,T), Rows) :-
 
     apply_dist(Rows,N,T,0,0,0),
 
-    labeling([ff], Vs).
+    labeling([ff, enum], Vs).
 %    maplist(portray_clause, FlatList),nl.
 
 

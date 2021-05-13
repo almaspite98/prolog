@@ -69,7 +69,10 @@ nth0_mtx(M,I,J,E):-
 %    abs(E1-E2) #= N.
 %
 
+
+
 dist([],E1,E2,E3,N):-
+%    cdisj([E1+N #\= E2,E2+N #\= E1], E1),
     abs(E1-E2) #\= N,
     abs(E1-E3) #\= N.
 dist([s],E1,E2,E3,N):-
@@ -79,28 +82,12 @@ dist([s,w],E1,E2,E3,N):-
     abs(E1-E2) #= N,
     abs(E1-E3) #= N.
 dist([w],E1,E2,E3,N):-
-    abs(E1-E2) #\= N,
-    abs(E1-E3) #= N.
-dist([A],E1,E2,E3,N):-
+    abs(E1-E3) #= N,
+    abs(E1-E2) #\= N.
+dist([A|Tail],E1,E2,E3,N):-
     integer(A),
-    E1 is A,
-    abs(A-E2) #\= N,
-    abs(A-E3) #\= N.
-dist([A,s],E1,E2,E3,N):-
-    integer(A),
-    E1 is A,
-    abs(A-E2) #= N,
-    abs(A-E3) #\= N.
-dist([A,w],E1,E2,E3,N):-
-    integer(A),
-    E1 is A,
-    abs(A-E2) #\= N,
-    abs(A-E3) #= N.
-dist([A,s,w],E1,E2,E3,N):-
-    integer(A),
-    E1 is A,
-    abs(A-E2) #= N,
-    abs(A-E3) #= N.
+    E1 #= A,
+    dist(Tail, E1, E2, E3, N).
 
 
 sudoku(s(N,T), Rows) :-
@@ -178,6 +165,7 @@ cella(S,I):-
 	all_distinct(C),
 	I1 is I + 1,
 	cella(S, I1).
+
 
 
 main :-
