@@ -30,43 +30,16 @@ magic(N, Rows):-
     N2 is N*N,
     domain(List, 1, N2),
     all_distinct(List),
-%    nth0(0, Rows, L0),
-%    sum_list(L0, Sum),
     maplist(my_sum(Sum), Rows),
-%    maplist()
-%    all_same_sum(Rows),
     transpose(Rows, Columns),
     maplist(my_sum(Sum), Columns),
-%    all_same_sum(Columns),
-
     diagonal1(Rows, Diag1),
     diagonal2(Rows, Diag2),
-%    same_sum_lists(Diag1, Diag2),
     maplist(my_sum(Sum), [Diag1,Diag2|Rows]),
-
-
-%    maplist(same_sum_list(Sum), Columns),
     labeling([ff], List).
 
 my_sum(Sum, List):-
     sum(List, #=, Sum).
-
-same_sum_list(0, []).
-same_sum_list(Sum, [H|T]):-
-    Sum2 #= Sum - H,
-    same_sum_list(Sum2, T).
-
-same_sum_lists([],[],Sum, Sum).
-same_sum_lists([H1|T1], [H2|T2], Sum1, Sum2):-
-    Sum12 #= Sum1 + H1,
-    Sum22 #= Sum2 + H2,
-    same_sum_lists(T1, T2, Sum12, Sum22).
-
-all_same_sum([H1,H2|[]]):
-    same_sum_lists(H1,H2, 0,0).
-all_same_sum([H1,H2, H3|T]):-
-    same_sum_lists(H1, H2,0,0),
-    all_same_sum([H2, H3|T]).
 
 diagonal1([], []).
 diagonal1([[E|_]|Ess], [E|Ds]) :-
@@ -125,21 +98,7 @@ megoldasok(Feladvany, Megoldasok) :-
 
 
 main :-
-%    magic(3, L),
 
-      M = [[2,7,6],
-         [9,5,1],
-         [4,3,8]],
-%     all_same_sum(M),
-     maplist(my_sum(_), Rows),
-
-
-%     diagonal1(M, D1),
-%     diagonal2(M, D2),
-%     print(D1),nl,
-%     print(D2),nl,
 
     megoldasok(3, L),
-%    same_sum_lists([1,2,3], [3,2,2],0,0),
-    print(L),
     nl.
