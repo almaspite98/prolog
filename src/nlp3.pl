@@ -1,5 +1,5 @@
 -module(khf3).
--export([ sudoku/2, magic/2, p/3, szeszam/2, latszam/2, panorama/3]).
+-export([ sudoku/2, magic/2, p/3,p2/3, szeszam/2, latszam/2, panorama/3]).
 :- use_module(library(clpfd)), use_module(library(lists)).
 
 % 1. Feladat
@@ -56,7 +56,15 @@ diagonal2(Ess,Ds) :-
 % p(A,B,C): ha az A-B szám 3-mal osztva 1 maradékot ad, akkor C páros, különben páratlan.
 % A p/3 eljárás ne címkézzen!
 
-p(A, B, C).
+p(A, B, C):-
+    Diff #= A - B,
+    Diff mod 4 #=1 #<=> C mod 2 #= 0.
+
+p2(A, B, C):-
+    Diff #= A - B,
+    Diff mod 4 #=1 #=> C mod 2 #= 0,
+    Diff mod 4 #\=1 #=> C mod 2 #= 1.
+
 
 
 % 4. Feladat
@@ -87,9 +95,9 @@ latszam(L, K).
 panorama(N, Latvanyok, Lakotelep).
 
 
-megoldasok(Feladvany, Megoldasok) :-
-	findall(Megoldas,
-		magic(Feladvany, Megoldas),
+megoldasok(s(A,B, C), Megoldasok) :-
+	findall(C,
+		p(A,B, C),
 		Megoldasok0),
 	sort(Megoldasok0, Megoldasok).
 
@@ -97,6 +105,11 @@ megoldasok(Feladvany, Megoldasok) :-
 
 main :-
 
-
-    megoldasok(3, L),
+%    A in 1..5,
+%    B in 1..10,
+%    C in 1..10,
+%    megoldasok(s(A,B, 0),L),
+%    print(L),
+%    domain([A,B], 1, 3), C in 0..1, p(A, B, C), labeling([], [A,B,C]), write(A-B-C), nl,fail,
+    domain([A,B],1,4),p(A,B,0),labeling([],[A,B]), write(A-B-0), nl,fail,
     nl.
