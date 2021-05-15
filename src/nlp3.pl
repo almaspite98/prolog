@@ -58,12 +58,12 @@ diagonal2(Ess,Ds) :-
 
 p(A, B, C):-
     Diff #= A - B,
-    Diff mod 4 #=1 #<=> C mod 2 #= 0.
+    Diff mod 3 #=1 #<=> C mod 2 #= 0.
 
 p2(A, B, C):-
     Diff #= A - B,
-    Diff mod 4 #=1 #=> C mod 2 #= 0,
-    Diff mod 4 #\=1 #=> C mod 2 #= 1.
+    Diff mod 3 #=1 #=> C mod 2 #= 0,
+    Diff mod 3 #\=1 #=> C mod 2 #= 1.
 
 
 
@@ -71,7 +71,18 @@ p2(A, B, C):-
 % szeszam(+L, ?K): az L, csupa különböző elemből álló listában levő lokális szélsőértékek száma K.
 % Az eljárás ne hozzon létre választási pontot (ne címkézzen)!
 
-szeszam(L, K).
+szeszam(L, K):-
+    all_distinct(L),
+    min_max_counter(L,K).
+
+min_max_counter([_],0).
+min_max_counter([_,_],0).
+min_max_counter([H1,H2,H3|T], K):-
+    domain([B],0,1),
+    ((H1 #> H2 #/\ H2 #< H3) #\/ (H1 #< H2 #/\ H2 #> H3)) #<=> B,
+
+    K1 #= K - B,
+    min_max_counter([H2,H3|T], K1).
 
 
 % 5. Feladat
@@ -79,6 +90,8 @@ szeszam(L, K).
 % Az eljárás ne hozzon létre választási pontot (ne címkézzen)!
 
 latszam(L, K).
+
+
 
 
 % 6. Feladat
@@ -111,5 +124,17 @@ main :-
 %    megoldasok(s(A,B, 0),L),
 %    print(L),
 %    domain([A,B], 1, 3), C in 0..1, p(A, B, C), labeling([], [A,B,C]), write(A-B-C), nl,fail,
-    domain([A,B],1,4),p(A,B,0),labeling([],[A,B]), write(A-B-0), nl,fail,
+%    domain([A,B],1,4),p(A,B,0),labeling([],[A,B]), write(A-B-0), nl,fail,
+
+
+%    H1 #> H2 #/\ H2 #< H3 #\ H1 #< H2 #/\ H2 #> H3 #=> B #= 1,
+%    H1 #> H2 #/\ H2 #> H3 #\ H1 #< H2 #/\ H2 #< H3 #=> B #= 0,
+%    domain([H1,H2,H3],1,2),
+%    domain([B],0,1),
+%    H1 #= 2, H2 #= 2, H3 #= 5,
+%    print('B: '),print(B),nl,
+%     labeling([], [H1,H2,H3,B]), write(H1-H2-H3-B),nl, fail,
+%    L=[1,_,_,_], domain(L, 1, 4), szeszam(L, 2), labeling([], L),print(L),nl,fail,
+%    length(L,4), szeszam(L,_N),
+    length(L,3),domain(L,1,3),szeszam(L,0),labeling([], L),print(L),nl,fail,
     nl.
