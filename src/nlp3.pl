@@ -21,8 +21,6 @@ sudoku_simple(Rows, N):-
 % magic(+N, ?Mx): Mx egy N oldalhosszú bűvös négyzet, vagyis az 1..N*N számokat pontosan egyszer
 % tartalmazza, és minden sor, oszlop és átló összege ugyanaz. Az eljárás címkézzen!
 
-magic(0, []).
-magic(1, [1]).
 magic(N, Rows):-
     length(Rows, N),
     maplist(same_length(Rows), Rows),
