@@ -16,7 +16,6 @@ sudoku_simple(Rows, N):-
     maplist(all_distinct, Columns),
     labeling([ff, enum], List).
 
-
 % 2. Feladat
 % magic(+N, ?Mx): Mx egy N oldalhosszú bűvös négyzet, vagyis az 1..N*N számokat pontosan egyszer
 % tartalmazza, és minden sor, oszlop és átló összege ugyanaz. Az eljárás címkézzen!
@@ -89,58 +88,6 @@ min_max_counter([H1,H2,H3|T], K):-
 % latszam(+L, ?K): az L listában levő balról látható elemek száma K.
 % Az eljárás ne hozzon létre választási pontot (ne címkézzen)!
 
-%latszam([],0).
-%latszam([H|T], K):-
-%    reverse([H|T], [H1|T1]),
-%%    print('L: '),print([H|T]),nl,
-%%    print('R: '),print([H1|T1]),nl,
-%    balrol_lathato(T1,H1, K).
-
-%latszam1([],0):-
-%    print('END'),nl.
-%%    K #= K - 1.
-%latszam1([H|T], K):-
-%
-%    balrol_lathato(T, H, K).
-%    K1 #= L #<=> B,
-%    K #= K - K1,
-%    latszam1(T, K).
-
-%latszam([],0).
-%latszam([],_).
-%latszam([H|T], K):-
-%    reverse([H|T], [H1|T1]),
-%%    print('L: '),print([H|T]),nl,
-%%    print('R: '),print([H1|T1]),nl,
-%    latszam1([H1|T1], K).
-%
-%latszam1([H], K):-
-%    print('Kukucs'),nl,
-%    K #= K-1.
-%latszam1([H1, H2|T], K):-
-%%    balrol_lathato([H2|T], H1,K),
-%    fdset_union([H2|T], Unio),
-%    max(Unio) #< H1 #<=> B,
-%    K #= K - B,
-%    latszam1([H2|T],K).
-
-
-%latszam(L, K):-
-%%    all_distinct(L),
-%    reverse(L, RL),
-%    bal_nagyobb(RL,K).
-
-%bal_nagyobb([],0).
-%bal_nagyobb([_],1):-
-%    K1 #= K - 1,
-%    bal_nagyobb([],K1).
-%bal_nagyobb([H1,H2|T], K):-
-%%    domain([B],0,1),
-%    (H1 #> H2) #<=> B,
-%    K1 #= K - B,
-%    bal_nagyobb([H2|T], K1).
-
-
 latszam(L, K):-
     reverse(L, RL),
     latszam1(RL, K).
@@ -164,61 +111,6 @@ balrol_lathato([H|T],E, B1, Bout):-
     B #/\ B1 #<=> B2,
     balrol_lathato(T, E, B2, Bout).
 
-%balrol_lathato([H|T],E, K):-
-
-
-%balrol_lathato([],E, K):-
-%    print('Kukucs'),nl,
-%    K #= K - 1.
-%balrol_lathato([H|T], E, K):-
-%    length([H|T], N),
-%    build(-1, N, List),
-%%    print(List),nl,
-%    append(List, [N], List2),
-%    append([H|T], [E], L2),
-%    print('E: '),print(E),nl,
-%    print('L2: '),print(L2),nl,
-%    print('List2: '),print(List2),nl,
-%    scalar_product(List2,L2,#=,D,[consistency(domain)]),
-%    domain([B],0,1),
-%    D #> 0 #<=> B,
-%    K #= K - B,
-%    print('K: '),print(K),nl,
-%    balrol_lathato(T, H, K).
-
-
-
-
-
-%build(X, N, List)  :-
-%    findall(X, between(1, N, _), List).
-
-%build(X, N, List)  :-
-%    length(List, N),
-%    maplist(=(X), List).
-
-%balrol_lathato([],E, K):-
-%    K #= K-1.
-%balrol_lathato(L, E, K):-
-%%    max_member(Max,[H|T]),
-%    find_max(L, Max)
-%%    print([H|T]),nl,
-%    print('E: '),print(E),nl,
-%    print('Max: '),print(Max),nl,
-%    domain([B],0,1),
-%    Max #< E #<=> B,
-%%    indomain(B),
-%%    B == 1,
-%    K #= K - B,
-%    print('K: '),print(K),nl.
-%%    balrol_lathato(T, E,K).
-
-%find_max(L, Max):-
-
-
-
-
-
 
 % 6. Feladat
 % panorama(+N, +Latvanyok, ?Lakotelep): Lakotelep egy N*N-es mátrix, amely egy lakótelep alaprajzát adja
@@ -231,7 +123,40 @@ balrol_lathato([H|T],E, B1, Bout):-
 % Az eljárás sorolja fel az összes megoldást. Csak a labeling/2 könyvtári eljárás hívása hozzon
 % létre választási pontot!
 
-panorama(N, Latvanyok, Lakotelep).
+panorama(N, Latvanyok, Rows):-
+    length(Rows, N),
+    maplist(same_length(Rows), Rows),
+    append(Rows, List),
+    domain(List, 1, N),
+    maplist(all_distinct, Rows),
+    transpose(Rows, Columns),
+    maplist(all_distinct, Columns),
+    latvany_szamlalo(Latvanyok, Rows),
+    labeling([ff], List).
+
+
+latvany_szamlalo([],_).
+latvany_szamlalo([H|T], M):-
+    latvany(M, H),
+    print(H),nl,
+    latvany_szamlalo(T, M).
+
+latvany(M, bal(I,K)):-
+    nth1(I,M,L),
+    latszam(L, K).
+latvany(M, felul(J,K)):-
+    transpose(M, Columns),
+    nth1(J,Columns,L),
+    latszam(L, K).
+latvany(M, jobb(I,K)):-
+    nth1(I,M,L),
+    reverse(L, RL),
+    latszam(RL, K).
+latvany(M, alul(J,K)):-
+    transpose(M, Columns),
+    nth1(J,Columns,L),
+    reverse(L, RL),
+    latszam(RL, K).
 
 
 megoldasok(s(A,B, C), Megoldasok) :-
@@ -265,7 +190,7 @@ main :-
 %    length(L,3),domain(L,1,3),szeszam(L,0),labeling([], L),print(L),nl,fail,
 %    L1 = [1,3,4,0], max_member(M, L1), print(M),
 %    L=[_,_,2,_], domain(L, 1, 4), all_distinct(L), latszam(L, 3), labeling([], L),print(L),nl,fail,
-    L=[_,_,_,3,_], domain(L, 1, 5), all_distinct(L), latszam(L, 3), labeling([], L),print(L),nl,fail,
+%    L=[_,_,_,3,_], domain(L, 1, 5), all_distinct(L), latszam(L, 3), labeling([], L),print(L),nl,fail,
 %    L=[_,1,_,_], domain(L, 1, 5), latszam(L, 1), labeling([], L),print(L),nl, fail,
 %    domain([B],0,1),
 %    balrol_lathato([5,2,1],5,1,B),
@@ -273,4 +198,5 @@ main :-
 
 %    print('Asd: '),nl,
 %    balrol_lathato([1,2,6,2], 10,0,4),
+%    panorama(4, [bal(1,2),bal(3,2),felul(2,3),felul(4,3),jobb(2,3),jobb(4,1),alul(1,3),alul(3,3)], Mx),print(Mx), nl,fail,
     nl.
