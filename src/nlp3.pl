@@ -89,7 +89,133 @@ min_max_counter([H1,H2,H3|T], K):-
 % latszam(+L, ?K): az L listában levő balról látható elemek száma K.
 % Az eljárás ne hozzon létre választási pontot (ne címkézzen)!
 
-latszam(L, K).
+%latszam([],0).
+%latszam([H|T], K):-
+%    reverse([H|T], [H1|T1]),
+%%    print('L: '),print([H|T]),nl,
+%%    print('R: '),print([H1|T1]),nl,
+%    balrol_lathato(T1,H1, K).
+
+%latszam1([],0):-
+%    print('END'),nl.
+%%    K #= K - 1.
+%latszam1([H|T], K):-
+%
+%    balrol_lathato(T, H, K).
+%    K1 #= L #<=> B,
+%    K #= K - K1,
+%    latszam1(T, K).
+
+%latszam([],0).
+%latszam([],_).
+%latszam([H|T], K):-
+%    reverse([H|T], [H1|T1]),
+%%    print('L: '),print([H|T]),nl,
+%%    print('R: '),print([H1|T1]),nl,
+%    latszam1([H1|T1], K).
+%
+%latszam1([H], K):-
+%    print('Kukucs'),nl,
+%    K #= K-1.
+%latszam1([H1, H2|T], K):-
+%%    balrol_lathato([H2|T], H1,K),
+%    fdset_union([H2|T], Unio),
+%    max(Unio) #< H1 #<=> B,
+%    K #= K - B,
+%    latszam1([H2|T],K).
+
+
+%latszam(L, K):-
+%%    all_distinct(L),
+%    reverse(L, RL),
+%    bal_nagyobb(RL,K).
+
+%bal_nagyobb([],0).
+%bal_nagyobb([_],1):-
+%    K1 #= K - 1,
+%    bal_nagyobb([],K1).
+%bal_nagyobb([H1,H2|T], K):-
+%%    domain([B],0,1),
+%    (H1 #> H2) #<=> B,
+%    K1 #= K - B,
+%    bal_nagyobb([H2|T], K1).
+
+
+latszam(L, K):-
+    reverse(L, RL),
+    latszam1(RL, K).
+
+latszam1([],0).
+latszam1([H],1):-
+    K1 #= K-1,
+    latszam1([],0).
+latszam1([H1, H2|T], K):-
+    domain([B],0,1),
+    balrol_lathato([H2|T],H1,1,B),
+    K1 #= K - B,
+    latszam1([H2|T], K1).
+
+
+balrol_lathato([],_,B,B).
+
+balrol_lathato([H|T],E, B1, Bout):-
+    domain([B, B2],0,1),
+    (E #> H) #<=> B,
+    B #/\ B1 #<=> B2,
+    balrol_lathato(T, E, B2, Bout).
+
+%balrol_lathato([H|T],E, K):-
+
+
+%balrol_lathato([],E, K):-
+%    print('Kukucs'),nl,
+%    K #= K - 1.
+%balrol_lathato([H|T], E, K):-
+%    length([H|T], N),
+%    build(-1, N, List),
+%%    print(List),nl,
+%    append(List, [N], List2),
+%    append([H|T], [E], L2),
+%    print('E: '),print(E),nl,
+%    print('L2: '),print(L2),nl,
+%    print('List2: '),print(List2),nl,
+%    scalar_product(List2,L2,#=,D,[consistency(domain)]),
+%    domain([B],0,1),
+%    D #> 0 #<=> B,
+%    K #= K - B,
+%    print('K: '),print(K),nl,
+%    balrol_lathato(T, H, K).
+
+
+
+
+
+%build(X, N, List)  :-
+%    findall(X, between(1, N, _), List).
+
+%build(X, N, List)  :-
+%    length(List, N),
+%    maplist(=(X), List).
+
+%balrol_lathato([],E, K):-
+%    K #= K-1.
+%balrol_lathato(L, E, K):-
+%%    max_member(Max,[H|T]),
+%    find_max(L, Max)
+%%    print([H|T]),nl,
+%    print('E: '),print(E),nl,
+%    print('Max: '),print(Max),nl,
+%    domain([B],0,1),
+%    Max #< E #<=> B,
+%%    indomain(B),
+%%    B == 1,
+%    K #= K - B,
+%    print('K: '),print(K),nl.
+%%    balrol_lathato(T, E,K).
+
+%find_max(L, Max):-
+
+
 
 
 
@@ -136,5 +262,15 @@ main :-
 %     labeling([], [H1,H2,H3,B]), write(H1-H2-H3-B),nl, fail,
 %    L=[1,_,_,_], domain(L, 1, 4), szeszam(L, 2), labeling([], L),print(L),nl,fail,
 %    length(L,4), szeszam(L,_N),
-    length(L,3),domain(L,1,3),szeszam(L,0),labeling([], L),print(L),nl,fail,
+%    length(L,3),domain(L,1,3),szeszam(L,0),labeling([], L),print(L),nl,fail,
+%    L1 = [1,3,4,0], max_member(M, L1), print(M),
+%    L=[_,_,2,_], domain(L, 1, 4), all_distinct(L), latszam(L, 3), labeling([], L),print(L),nl,fail,
+    L=[_,_,_,3,_], domain(L, 1, 5), all_distinct(L), latszam(L, 3), labeling([], L),print(L),nl,fail,
+%    L=[_,1,_,_], domain(L, 1, 5), latszam(L, 1), labeling([], L),print(L),nl, fail,
+%    domain([B],0,1),
+%    balrol_lathato([5,2,1],5,1,B),
+%    print('Bout: '), print(B),nl,
+
+%    print('Asd: '),nl,
+%    balrol_lathato([1,2,6,2], 10,0,4),
     nl.
