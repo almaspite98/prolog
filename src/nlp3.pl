@@ -138,7 +138,6 @@ panorama(N, Latvanyok, Rows):-
 latvany_szamlalo([],_).
 latvany_szamlalo([H|T], M):-
     latvany(M, H),
-    print(H),nl,
     latvany_szamlalo(T, M).
 
 latvany(M, bal(I,K)):-
